@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class = "body-acessar">
+    <main class = "main-acessar">
+        <div class = "acessar-container">
+            <div class = "logo-acessar">
+                <img src="{{ url_for('imagens', filename='logo-fundoBranco.png') }}" alt="Logo do sistema">
+            </div>
+            <h3>Acesse sua conta</h3>
+
+            <div class = "usuarios-container">
+                <div class = "usuario-card">
+                    <h2>Paciente</h2>
+                </div>
+                <div class = "usuario-card">
+                    <h2>Médico</h2>
+                </div>
+                <div class = "usuario-card">
+                    <h2>Administrador</h2>
+                </div>
+            </div>
+
+            <input type="email" placeholder="E-mail">
+            <input type = "password" placeholder = "Senha">
+
+            <button class = "btn-entrar">Entrar</button>
+
+            <p>Não possui uma conta? <a href = "/cadastro">Cadastre-se</a></p>
+        </div>    
+    </main>
+</body>
+</html>

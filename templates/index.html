@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topo">
+        <a class="logo" href="/">GestãoMed</a>
+
+        <nav>
+            <a href="/">Início</a>
+            <a href="#sobre">Sobre</a>
+            <a href="#funcionalidades">Funcionalidades</a>
+            <a href="#planos">Planos</a>
+        </nav>
+
+        <button class="botao-acessar" onclick="window.location.href='{{ url_for('login') }}'">Acessar</button>
+    </header>
+
+    <main class="conteudo">
+    
+        <section class="hero">
+            <div class = "hero-text">
+                <p class="etiqueta">Mais organização. Mais tempo para o que importa</p>
+                <h1>{{ titulo }}</h1>
+                <p>{{ mensagem }}</p>
+                <div class = "div-botoes">
+                    <a class="botao-comece-agora" href="#comece-agora">Comece agora</a>
+                    <a class="botao-sobre" href="#sobre">Conheça o sistema</a>
+                </div>
+                
+            </div>
+            
+            <div class="hero-image">
+                <img src="{{ url_for('imagens', filename='imagem-medica.svg') }}" alt="Ícone da medica">
+            </div>
+        </section>
+
+
+        <section id="sobre" class="secao">
+            <div class="card-sobre">
+                <img src="{{ url_for('imagens', filename='icon-calendario-png.png') }}" alt="Ícone de calendário">
+               <h2>Agendamentos Inteligentes</h2>
+                <p>Evite faltas e otimize a sua agenda.</p>
+            </div>
+
+            <div class="card-sobre">
+                <img src="{{ url_for('imagens', filename='icon-pessoa-png.png') }}" alt="Ícone de pessoa">
+               <h2>Prontuário eletrônico</h2>
+                <p>Acesso rápido e seguro ao histórico do paciente</p>
+            </div>
+
+            <div class="card-sobre">
+                <img src="{{ url_for('imagens', filename='icon-chat-png.png') }}" alt="Ícone de chat">
+                <h2>Comunicação Integrada</h2>
+                <p>Conecte médicos, pacientes e equipe administrativa.</p>
+            </div>
+
+             <div class="card-sobre">
+                <img src="{{ url_for('imagens', filename='icon-grafico-png.png') }}" alt="Ícone de gráfico">
+               <h2>Relatórios e Indicadores</h2>
+                <p>Acompanhe o desempenho da sua clínica com dados em tempo real.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contato">
+        <p>© 2026 GestãoMed - Sistema de Gestão de Consultas Médicas.</p>
+    </footer>
+</body>
+</html>
