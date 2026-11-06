@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Prontuário do paciente</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+<body>
+    <main class="page">
+        <h1>‹ Voltar &nbsp; Prontuário do paciente</h1>
+        <section class="panel profile">
+            <div class="avatar">AC</div>
+            <div>
+                <h2 style="margin-bottom:5px">Ana Clara Santos</h2>
+                <small>29 anos • CPF 123.456.789-00</small>
+            </div>
+        </section>
+
+        <nav class="tabs">
+            <a class="active" href="#">Histórico</a>
+            <a href="#">Dados pessoais</a>
+            <a href="#">Exames</a>
+            <a href="#">Prescrições</a>
+            <a href="#">Anotações</a>
+        </nav>
+        <section class="panel">
+            <div class="entry">
+                <div class="entry-icon">●</div>
+                <div>
+                    <small>Consulta - 15/04/2025</small>
+                    <p style="margin:6px 0 4px">Clínica Geral</p>
+                    <small>Paciente relata melhora no quadro de dor. Mantido tratamento.</small>
+                </div>
+            </div>
+            <div class="entry">
+                <div class="entry-icon">●</div>
+                <div>
+                    <small>Consulta - 22/03/2025</small>
+                    <p style="margin:6px 0 4px">Clínica Geral</p>
+                    <small>Solicitado exames laboratoriais. Retorno em 30 dias.</small>
+                </div>
+            </div>
+            <div class="entry">
+                <div class="entry-icon">♧</div>
+                <div style="flex:1">
+                    <small>Exame - 12/03/2025</small>
+                    <p style="margin:6px 0 4px">Hemograma Completo</p>
+                    <small>Laboratório Vida</small>
+                </div>
+                <span class="pill">Resultado disponível</span>
+            </div>
+        </section>
+</main></body></html>

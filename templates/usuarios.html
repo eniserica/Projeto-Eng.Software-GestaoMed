@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Gestão de usuários</title><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
+<body><main class="page">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h1>Gestão de usuários</h1><button>+ Novo usuário</button></div>
+  <nav class="tabs"><a class="active" href="#">Médicos</a><a href="#">Equipe administrativa</a><a href="#">Pacientes</a></nav>
+  <input class="search" type="search" placeholder="⌕  Buscar por nome ou CRM...">
+  <section class="panel"><table><thead><tr><th>Nome</th><th>Função</th><th>CRM</th><th>Status</th><th></th></tr></thead><tbody>
+    <tr><td>👩🏻‍⚕️ Dr. Rafael Silva</td><td>Médico</td><td>123456</td><td><span class="pill">Ativo</span></td><td>⋮</td></tr>
+    <tr><td>👩🏻‍⚕️ Dra. Juliana Freitas</td><td>Médica</td><td>654321</td><td><span class="pill">Ativo</span></td><td>⋮</td></tr>
+    <tr><td>👨🏻‍⚕️ Dr. Carlos Mendes</td><td>Médico</td><td>789456</td><td><span class="pill">Ativo</span></td><td>⋮</td></tr>
+    <tr><td>👩🏻 Mariana Lima</td><td>Admin</td><td>-</td><td><span class="pill">Ativo</span></td><td>⋮</td></tr>
+    <tr><td>👨🏻 Lucas Ferreira</td><td>Recepção</td><td>-</td><td><span class="pill">Ativo</span></td><td>⋮</td></tr>
+  </tbody></table></section>
+</main></body></html>

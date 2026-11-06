@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <div class = "medico-container">
+            <div class = "menu-medico">
+                <img src="{{ url_for('imagens', filename='logo-fundoAzul.png') }}" alt="Logo do sistema" > 
+                <div class = "icons-menu">
+                    <h3>Inicio</h3>
+                </div>
+                <div class = "icons-menu">
+                    <h3>Agenda</h3>
+                </div>
+                <div class = "icons-menu">
+                    <h3>Pacientes</h3>
+                </div>
+                <div class = "icons-menu">
+                    <h3>Prontuário</h3>
+                </div>
+                <div class = "icons-menu">
+                    <h3>Relatórios</h3>
+                </div>
+            </div>
+
+            <div class = "conteudo-medico">
+                <h1>Bem-vindo, {{ nome_medico }}!</h1>
+                <br>
+                <p>Médico(a) | CRM {{ crm_medico }} </p>
+                
+            <div class = "cards-medico">
+                
+                <div class = "card-consultas">
+                    <img src="{{ url_for('imagens', filename='icon-calendario-png.png') }}" alt="Ícone de calendário">
+                    <p>Hoje</p>
+                    <h4>10 consultas</h4>
+                </div>
+               
+                <div class = "card-pacientes">
+                    <img src="{{ url_for('imagens', filename='icon-pessoa-png.png') }}" alt="Ícone de pessoa">
+                    <p>Pacientes em espera</p>
+                    <h4>2 pacientes</h4>
+                </div>     
+                
+                <div class = "card-prontuario">
+                    <img src="{{ url_for('imagens', filename='icon-prontuario-png.png') }}" alt="Ícone de prontuário">
+                    <p>Prontuários pendentes</p>
+                    <h4>5 prontuários</h4>
+                </div>
+            </div>
+                <div class = "agenda-container">
+                    <h3>Agenda de hoje</h3>
+                    <p>Ver agenda completa</p>
+
+                    <div class = "agenda-card">
+                        <div class = "horario-consulta">
+                            <h3>14:00</h3>
+                        </div>
+                        <div class = "info-consulta">
+                            <h3>Clinica Geral</h3>
+                            <h4>Dr. João Silva</h4>
+                            <p>Paciente: Maria Souza</p>
+                        </div>
+                    </div>
+                    <div class = "agenda-card">
+                        <div class = "horario-consulta">
+                            <h3>14:00</h3>
+                        </div>
+                        <div class = "info-consulta">
+                            <h3>Clinica Geral</h3>
+                            <h4>Dr. João Silva</h4>
+                            <p>Paciente: Érica Santos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>     
+
+        </div>
+
+    </main>
+</body>
+</html>

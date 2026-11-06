@@ -331,9 +331,6 @@ footer {
     padding-bottom: 0;
     margin-bottom: 0;
 }
-.icons-menu{
-    
-}
 
 .historico-consultas{
     display: flex;
@@ -366,6 +363,65 @@ footer {
     max-width: 400px;
     margin-bottom: 16px;
 }
+
+.menu-medico{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    color: white;
+    background: #172033;
+    width: 30%;
+    flex-shrink: 0;
+    height: 100vh;
+}
+.conteudo-medico{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.medico-container{
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    background:white;
+    color: #172033;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+.menu-medico img{
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 16px;
+}
+
+.card-consultas, .card-pacientes, .card-prontuario{
+    display: flex;
+    border: 1px solid #dfe3ee;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px #dfe3ee; 
+    margin: 8px;
+}
+
+.conteudo-medico img{
+    width: 60%;
+    max-width: 200px;
+}
+
+.cards-medico{
+    display:flex;
+    justify-content: space-between;
+}
+
+
 @media (max-width: 600px) {
     .topo {
         align-items: flex-start;
@@ -376,4 +432,95 @@ footer {
     nav {
         flex-wrap: wrap;
     }
+}
+
+* { box-sizing: border-box; }
+:root {
+  --azul: #123f70;
+  --azul-escuro: #082b50;
+  --azul-claro: #eaf4fc;
+  --borda: #dce8f2;
+  --texto: #24415f;
+  --muted: #7890a8;
+  --verde: #20a77b;
+  --fundo: #f7fbff;
+}
+body {
+  margin: 0;
+  padding: 24px;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+button {
+  border: 0; border-radius: 7px; padding: 10px 15px;
+  color: white; background: var(--azul); cursor: pointer;
+}
+button:hover { background: #1b568d; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { font-size: 21px; color: var(--azul); margin-bottom: 18px; }
+h2 { font-size: 16px; color: var(--azul); }
+small, .muted { color: var(--muted); }
+.panel {
+  background: white; border: 1px solid var(--borda);
+  border-radius: 11px; padding: 17px; margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(23, 67, 105, .035);
+}
+.page { max-width: 1100px; margin: 0 auto; }
+.tabs { display: flex; gap: 26px; border-bottom: 1px solid var(--borda); margin: 12px 0 18px; }
+.tabs a { padding: 10px 2px; color: #6c849d; }
+.tabs a.active { color: var(--azul); border-bottom: 2px solid var(--azul); font-weight: bold; }
+.pill { display: inline-block; padding: 5px 10px; border-radius: 20px; background: #e5f7f0; color: var(--verde); font-size: 12px; white-space: nowrap; }
+.search { width: 100%; border: 1px solid var(--borda); border-radius: 7px; padding: 11px 13px; outline: none; margin-bottom: 14px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 13px 10px; border-bottom: 1px solid #edf2f7; }
+th { color: #6e849b; font-size: 12px; background: #f5f9fc; }
+.profile { display: flex; align-items: center; gap: 14px; }
+.avatar { width: 46px; height: 46px; border-radius: 50%; background: #e4f0f9; display: grid; place-items: center; color: var(--azul); font-weight: bold; }
+.grid { display: grid; gap: 14px; }
+.two { grid-template-columns: 1fr 1fr; }
+.three { grid-template-columns: repeat(3, 1fr); }
+.four { grid-template-columns: repeat(4, 1fr); }
+.metric strong { display: block; font-size: 22px; color: var(--azul-escuro); margin: 8px 0 4px; }
+.metric small { color: var(--verde); }
+.sidebar-layout { display: grid; grid-template-columns: 210px 1fr; gap: 20px; max-width: 1250px; margin: -24px; min-height: 100vh; }
+.sidebar { background: var(--azul-escuro); color: white; padding: 25px 15px; }
+.brand { font-size: 21px; font-weight: bold; margin: 0 0 28px 8px; }
+.sidebar a { display: block; padding: 12px 10px; border-radius: 7px; margin: 5px 0; color: #d9e7f4; }
+.sidebar a.active, .sidebar a:hover { background: #15518a; color: white; }
+.main-content { padding: 25px 25px 35px 5px; }
+.chart { height: 190px; display: flex; align-items: end; gap: 12px; padding: 15px 5px 5px; border-bottom: 1px solid var(--borda); }
+.bar { flex: 1; background: #6aa8e8; border-radius: 5px 5px 0 0; min-width: 12px; }
+.donut { width: 145px; height: 145px; border-radius: 50%; background: conic-gradient(#123f70 0 32%, #e7cda3 32% 44%, #79b8ed 44% 62%, #a6d0f3 62% 78%, #2e80c8 78%); position: relative; margin: 8px auto; }
+.donut:after { content: ""; position: absolute; inset: 34px; background: white; border-radius: 50%; }
+.legend p { margin: 8px 0; font-size: 12px; }
+.entry { display: flex; gap: 13px; align-items: flex-start; padding: 15px 4px; border-bottom: 1px solid #edf2f7; }
+.entry:last-child { border-bottom: 0; }
+.entry-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--azul-claro); color: var(--azul); display: grid; place-items: center; flex-shrink: 0; }
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; }
+.day { padding: 12px 5px; min-height: 85px; border: 1px solid var(--borda); border-radius: 7px; background: white; font-size: 12px; }
+.day strong { display: block; margin-bottom: 10px; }
+.appointment { display: block; padding: 8px; border-radius: 6px; background: #eaf4fc; color: #28669f; margin-top: 5px; }
+.steps { display: flex; gap: 28px; align-items: center; margin: 15px 0 20px; color: var(--muted); }
+.steps span:first-child { color: var(--azul); font-weight: bold; }
+.specialty { display: flex; align-items: center; justify-content: space-between; padding: 13px 5px; border-bottom: 1px solid #edf2f7; }
+.specialty:last-child { border: 0; }
+.hours { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.hours span { border: 1px solid var(--borda); border-radius: 7px; padding: 9px 12px; }
+.hours span:first-child { background: var(--azul-claro); color: var(--azul); }
+@media (max-width: 760px) {
+  body { padding: 14px; }
+  .sidebar-layout { display: block; margin: -14px; }
+  .sidebar { padding: 12px; }
+  .brand { margin-bottom: 8px; }
+  .sidebar a { display: inline-block; padding: 8px; }
+  .main-content { padding: 15px; }
+  .two, .three, .four { grid-template-columns: 1fr; }
+  .tabs { gap: 14px; overflow-x: auto; }
+  table { min-width: 600px; }
+  .panel:has(table) { overflow-x: auto; }
+  .calendar { grid-template-columns: repeat(2, 1fr); }
 }
