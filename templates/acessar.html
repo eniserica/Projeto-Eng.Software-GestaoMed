@@ -12,26 +12,34 @@
             <div class = "logo-acessar">
                 <img src="{{ url_for('imagens', filename='logo-fundoBranco.png') }}" alt="Logo do sistema">
             </div>
+            {% if not tipo %}
             <h3>Acesse sua conta</h3>
 
             <div class = "usuarios-container">
-                <div class = "usuario-card">
+                <a class = "usuario-card" href="{{url_for('login', tipo='paciente')}}">
                     <h2>Paciente</h2>
-                </div>
-                <div class = "usuario-card">
+                </a>
+                <a class = "usuario-card" href="{{url_for('login', tipo='medico')}}">
                     <h2>Médico</h2>
-                </div>
-                <div class = "usuario-card">
+                </a>
+                <a class = "usuario-card" href="{{url_for('login', tipo='administrador')}}">
                     <h2>Administrador</h2>
-                </div>
+                </a>
             </div>
 
-            <input type="email" placeholder="E-mail">
-            <input type = "password" placeholder = "Senha">
+            {% else %}
+                <h3>Acesse como {{ tipo|replace('medico', 'médico')|capitalize }}</h3>
+            
+                <a href="{{ url_for('login') }}">Escolher outro perfil</a>
 
-            <button class = "btn-entrar">Entrar</button>
+                <input type="email" placeholder="E-mail">
+                <input type = "password" placeholder = "Senha">
+                
+                <button class = "btn-entrar">Entrar</button>
 
-            <p>Não possui uma conta? <a href = "/cadastro">Cadastre-se</a></p>
+                <p>Não possui uma conta? <a href = "{{ url_for('cadastro', tipo=tipo) }}">Cadastre-se</a></p>
+
+                {% endif %}
         </div>    
     </main>
 </body>

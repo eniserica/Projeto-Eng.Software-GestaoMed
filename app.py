@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, request
 
 app = Flask(__name__)
 
@@ -16,9 +16,46 @@ def inicio():
 
 @app.route("/login")
 def login():
+    tipo = request.args.get("tipo")
+
+    tipos_validos = {"paciente", "medico", "administrador"}
+
+    if tipo not in tipos_validos:
+        tipo = None
+
     return render_template(
         "acessar.html",
-        titulo="Acessar o sistema"
+        titulo="Acessar o sistema",
+        tipo=tipo
+    )
+
+@app.route("/cadastro", methods=["GET", "POST"])
+def cadastro():
+    tipo = request.args.get("tipo")
+
+    tipos_validos = {"paciente", "medico", "administrador"}
+
+    if tipo not in tipos_validos:
+        tipo = None
+
+    mensagem = None
+
+    if request.method == "POST":
+        nome = request.form.get("nome", "").strip()
+        email = request.form.get("email", "").strip()
+        senha = request.form.get("senha", "")
+
+        if nome and email and senha:
+            mensagem = "Formulário recebido. O cadastro ainda não será salvo!."
+        else:
+            mensagem = "Preencha todos os campos."
+
+
+    return render_template(
+        "cadastro.html",
+        titulo="Criar conta",
+        tipo=tipo,
+        mensagem=mensagem
     )
 
 @app.route("/paciente")

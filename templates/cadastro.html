@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastre-se</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+</head>
+<body class="body-acessar">
+    <main class="main-acessar">
+        <div class="acessar-container">
+            <h3>Criar Conta</h3>
+
+
+            <p>Perfil:
+                {{ tipo|replace('medico', 'médico')|capitalize if tipo else 'não escolhido'}}
+            </p>
+            <form method="post">
+                <input type="hidden" name="tipo" value="{{ tipo or '' }}">
+                <input type="text" name="nome" placeholder="Nome completo" required>
+                <input type="email" name="email" placeholder="E-mail" required>
+                <input type="password" name="senha" placeholder="Senha" required>
+
+                <button class="btn-entrar" type="submit">Cadastrar</button>
+            </form>
+            {% if mensagem %}
+                <p>{{ mensagem }}</p>
+            {% endif %}
+            
+
+            
+              <p><a href="{{ url_for('login', tipo=tipo) }}">Voltar para o login</a></p>
+
+        </div>
+    </main>
+</body>
+
+
+
+</html>

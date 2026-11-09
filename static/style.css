@@ -524,3 +524,41 @@ th { color: #6e849b; font-size: 12px; background: #f5f9fc; }
   .panel:has(table) { overflow-x: auto; }
   .calendar { grid-template-columns: repeat(2, 1fr); }
 }
+
+body.pagina-inicial {
+    padding: 0;
+    background: #fff;
+}
+
+.pagina-inicial .topo,
+.pagina-inicial .hero {
+    background: #082b50;
+}
+
+
+.pagina-inicial .topo nav a,
+.pagina-inicial .hero p {
+  color: #d9e7f4;
+}
+
+.pagina-inicial .hero h1 {
+  color: #fff;
+}
+
+.pagina-inicial .conteudo {
+  width: 100%;
+}
+
+.pagina-inicial .secao {
+  padding: 30px 8%;
+  background: #fff;
+}
+
+body.pagina-inicial {
+  padding: 0;
+  background: #fff;
+}
+
+.pagina-inicial .hero {
+  padding: 48px 8% 60px;
+}
