@@ -26,13 +26,17 @@
             {% if mensagem %}
                 <p>{{ mensagem }}</p>
             {% endif %}
-            
+
 
             
-              <p><a href="{{ url_for('login', tipo=tipo) }}">Voltar para o login</a></p>
+            <p class="voltar-login"><a href="{{ url_for('login', tipo=tipo) }}">Voltar para o login</a></p>
 
         </div>
     </main>
+    <footer class="rodape-acesso">
+        <img src="{{ url_for('imagens', filename='logo-fundoAzul.png') }}" alt="GestãoMed">
+        <span>Juntos por uma saúde mais eficiente.</span>
+    </footer>
 </body>
 
 

@@ -8,7 +8,7 @@
 </head>
 <body class = "body-acessar">
     <main class = "main-acessar">
-        <div class = "acessar-container">
+        <div class = "acessar-container {% if not tipo %}selecao-perfil{% endif %}">
             <div class = "logo-acessar">
                 <img src="{{ url_for('imagens', filename='logo-fundoBranco.png') }}" alt="Logo do sistema">
             </div>
@@ -17,13 +17,30 @@
 
             <div class = "usuarios-container">
                 <a class = "usuario-card" href="{{url_for('login', tipo='paciente')}}">
+                    <span class="usuario-icone" aria-hidden="true">♙</span>
                     <h2>Paciente</h2>
+                    <p class="usuario-descricao">
+                        Agende consultas, acompanhe seus atendimentos e acesse seus exames.
+                    </p>
+                    <span class="usuario-cta"> Entrar como paciente →</span>
                 </a>
+
                 <a class = "usuario-card" href="{{url_for('login', tipo='medico')}}">
+                    <span class="usuario-icone" aria-hidden="true">⚕</span>
                     <h2>Médico</h2>
+                    <p class="usuario-descricao">
+                        Gerencie sua agenda, prontuários e atendimentos com mais praticidade.
+                    </p>
+                    <span class="usuario-cta"> Entrar como médico →</span>
                 </a>
+
                 <a class = "usuario-card" href="{{url_for('login', tipo='administrador')}}">
+                    <span class="usuario-icone" aria-hidden="true">⚙</span>
                     <h2>Administrador</h2>
+                    <p class="usuario-descricao">
+                        Configure o sistema, gerencie a equipe e acompanhe sua clínica.
+                    </p>
+                    <span class="usuario-cta"> Entrar como administrador →</span>
                 </a>
             </div>
 
@@ -40,7 +57,14 @@
                 <p>Não possui uma conta? <a href = "{{ url_for('cadastro', tipo=tipo) }}">Cadastre-se</a></p>
 
                 {% endif %}
-        </div>    
+
+        </div>
+        
+        <p class="mensagem-acesso">Cuidado e praticidade em um só lugar.</p>    
     </main>
+    <footer class="rodape-acesso">
+        <img src="{{ url_for('imagens', filename='logo-fundoAzul.png') }}" alt="GestãoMed">
+        <span>Juntos por uma saúde mais eficiente.</span>
+    </footer>
 </body>
 </html>

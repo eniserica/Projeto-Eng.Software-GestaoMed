@@ -238,7 +238,9 @@ footer {
 
 .logo-acessar img{
     width: 200px;
-    height: 100px;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
 }
 
 .paciente-container{
@@ -561,4 +563,183 @@ body.pagina-inicial {
 
 .pagina-inicial .hero {
   padding: 48px 8% 60px;
+}
+
+.body-acessar {
+  min-height: 100vh;
+  height: auto;
+  background: #f7fbff;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.main-acessar {
+  flex-direction: column;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  align-items: center;
+  padding: 24px;
+}
+
+.acessar-container {
+  width: min(100%, 460px);
+  padding: 36px 28px;
+  border: 1px solid #e4edf5;
+  box-shadow: 0 8px 28px rgba(8, 43, 80, 0.08);
+}
+
+.acessar-container.selecao-perfil {
+  width: min(100%, 820px);
+}
+
+.acessar-container h3 {
+  margin: 0 0 12px;
+  color: #24415f;
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-align: center;
+}
+
+.logo-acessar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.usuarios-container {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin: 18px 0 10px;
+}
+
+.usuario-card {
+  min-width: 0;
+  min-height: 220px;
+  margin: 0;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #dce8f2;
+  border-radius: 8px;
+  background: #fff;
+  color: #123f70;
+  text-align: center;
+  text-decoration: none;
+}
+
+.usuario-card h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.usuario-icone {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #eaf4fc;
+  color: #123f70;
+  font-size: 22px;
+}
+
+.usuario-descricao {
+  margin: 0;
+  color: #7890a8;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.usuario-cta {
+  width: 100%;
+  margin-top: auto;
+  padding: 8px 6px;
+  border-radius: 20px;
+  background: #082b50;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.usuario-card:hover {
+  transform: translateY(-2px);
+  border-color: #123f70;
+  background: #fff;
+  color: #123f70;
+  box-shadow: 0 5px 14px rgba(8, 43, 80, 0.12);
+}
+
+.usuario-card:focus-visible {
+  outline: 3px solid #79b8ed;
+  outline-offset: 2px;
+}
+
+@media (max-width: 520px) {
+  .usuarios-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rodape-acesso {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 200px;
+  padding: 44px 5% 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #082b50;
+  color: #fff;
+}
+
+.rodape-acesso::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -34px;
+  left: -6%;
+  width: 112%;
+  height: 68px;
+  background: #f7fbff;
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  pointer-events: none;
+}
+
+.rodape-acesso img,
+.rodape-acesso span {
+  position: relative;
+  z-index: 1;
+}
+
+.rodape-acesso img {
+  width: auto;
+  height: 64px;
+  object-fit: contain;
+}
+
+.mensagem-acesso {
+  margin: 64px 0 24px;
+  color: #123f70;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.acessar-container .btn-entrar + p {
+  margin-top: 24px;
+}
+
+.voltar-login {
+    margin-top: 24px;
 }
