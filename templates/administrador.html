@@ -1,44 +1,93 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>GestãoMed - Início</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="sidebar-layout">
-        <aside class="sidebar">
-            <div class="brand">✚ GestãoMed</div>
-            <a class="active" href="{{ url_for('administrador') }}">⌂ &nbsp; Início</a>
-            <a href="{{ url_for('usuarios') }}">♙ &nbsp; Usuários</a>
-            <a href="#">▦ &nbsp; Agenda</a>
-            <a href="{{ url_for('prontuario') }}">♧ &nbsp; Pacientes</a>
-            <a href="{{ url_for('relatorios') }}">▤ &nbsp; Relatórios</a>
-            <a href="#">⚙ &nbsp; Configurações</a>
-            <a href="{{ url_for('logout') }}">Sair</a>
-        </aside>
-        <main class="main-content">
-            <h1>Olá, Mariana Lima!</h1>
-            <p class="muted">Administrador do sistema</p>
-            <section class="grid three">
-                <div class="panel metric">
-                    <small>Total de pacientes</small>
-                    <strong>1.248</strong>
-                    <small>↑ 12% no último mês</small>
-                </div>
-                <div class="panel metric">
-                    <small>Consultas hoje</small>
-                    <strong>48</strong>
-                    <small>↑ 8% na última semana</small>
-                </div>
-      <div class="panel metric"><small>Médicos ativos</small><strong>12</strong><small>↑ 0%</small></div>
+{% extends "base_administrador.html" %}
+
+{% block content %}
+    <h1>Olá, {{ nome_administrador }}!</h1>
+    <p class="muted">Administrador do sistema</p>
+
+    {% if erro_resumo %}
+        <p role="alert">{{ erro_resumo }}</p>
+    {% endif %}
+
+    <section class="grid four">
+        <div class="panel metric">
+            <small>Pacientes ativos</small>
+            <strong>
+                {% if resumo is not none %}{{ resumo[0] }}{% else %}Indisponível{% endif %}
+            </strong>
+        </div>
+
+        <div class="panel metric">
+            <small>Consultas registradas</small>
+            <strong>
+                {% if resumo is not none %}{{ resumo[1] }}{% else %}Indisponível{% endif %}
+            </strong>
+        </div>
+
+        <div class="panel metric">
+            <small>Médicos ativos</small>
+            <strong>
+                {% if resumo is not none %}{{ resumo[2] }}{% else %}Indisponível{% endif %}
+            </strong>
+        </div>
+
+        <div class="panel metric">
+            <small>Exames cadastrados</small>
+            <strong>
+                {% if resumo is not none %}{{ resumo[3] }}{% else %}Indisponível{% endif %}
+            </strong>
+        </div>
     </section>
+
     <section class="grid two">
-      <div class="panel"><h2>Visão geral</h2><div class="tabs"><a class="active" href="#">Consultas</a><a href="#">Pacientes</a><a href="#">Faturamento</a></div>
-        <div class="chart"><i class="bar" style="height:25%"></i><i class="bar" style="height:40%"></i><i class="bar" style="height:32%"></i><i class="bar" style="height:60%"></i><i class="bar" style="height:48%"></i><i class="bar" style="height:66%"></i><i class="bar" style="height:62%"></i><i class="bar" style="height:78%"></i><i class="bar" style="height:72%"></i></div><small>Jan &nbsp; Fev &nbsp; Mar &nbsp; Abr &nbsp; Mai &nbsp; Jun &nbsp; Jul &nbsp; Ago</small>
-      </div>
-      <div class="panel"><h2>Especialidades mais atendidas</h2><div class="donut"></div><div class="legend"><p>🔵 Clínica Geral <span style="float:right">32%</span></p><p>🔹 Cardiologia <span style="float:right">18%</span></p><p>🔹 Dermatologia <span style="float:right">15%</span></p><p>🔹 Ginecologia <span style="float:right">12%</span></p><p>🟥 Outras <span style="float:right">23%</span></p></div></div>
+        <div class="panel">
+            <h2>Consultas por mês</h2>
+
+            {% if meses_grafico %}
+                <div class="chart" aria-label="Consultas por mês">
+                    {% for mes in meses_grafico %}
+                        <i
+                            class="bar"
+                            style="height: {{ mes.altura }}%;"
+                            title="{{ mes.quantidade }} consultas em {{ mes.mes }}"
+                        ></i>
+                    {% endfor %}
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; text-align:center; margin-top:8px">
+                    {% for mes in meses_grafico %}
+                        <small>{{ mes.mes }}</small>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Não há dados mensais para mostrar.</p>
+            {% endif %}
+        </div>
+
+        <div class="panel">
+            <h2>Consultas por especialidade</h2>
+
+            {% if especialidades_grafico %}
+                <div
+                    class="donut"
+                    style="background: {{ donut_gradient }};"
+                    aria-label="Distribuição de consultas por especialidade"
+                ></div>
+
+                <div class="legend">
+                    {% for especialidade in especialidades_grafico %}
+                        <p>
+                            <span style="color: {{ especialidade.cor }};">●</span>
+                            {{ especialidade.nome }}
+                            <span style="float:right">
+                                {{ especialidade.percentual }}%
+                                ({{ especialidade.quantidade }})
+                            </span>
+                        </p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Não há consultas por especialidade para mostrar.</p>
+            {% endif %}
+        </div>
     </section>
-  </main>
-</div></body></html>
+{% endblock %}

@@ -37,6 +37,13 @@ from database import (
     listar_pacientes_medico,
     obter_resumo_medico,
     listar_usuarios,
+    listar_pacientes_administrador,
+    listar_consultas_administrador,
+    obter_resumo_administrador,
+    listar_consultas_por_mes_administrador,
+    listar_consultas_por_especialidade_administrador,
+    obter_perfil_medico,
+    atualizar_especialidade_medico,
 )
 
 load_dotenv()
@@ -306,6 +313,52 @@ def medico():
         erro_dados=erro_dados,
     )
 
+@app.route("/perfil-medico", methods=["GET", "POST"])
+@perfil_obrigatorio("medico")
+def perfil_medico():
+    mensagem = (
+        "Especialidade atualizada."
+        if request.args.get("sucesso") == "1"
+        else None
+    )
+
+    try:
+        perfil = obter_perfil_medico(session["usuario_id"])
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar o perfil do médico.")
+        return "Não foi possível carregar seu perfil.", 503
+
+    if perfil is None:
+        abort(404)
+
+    if request.method == "POST":
+        especialidade = request.form.get("especialidade", "").strip()
+
+        if not especialidade:
+            mensagem = "Informe sua especialidade."
+        elif len(especialidade) > 120:
+            mensagem = "A especialidade deve ter no máximo 120 caracteres."
+        else:
+            try:
+                medico_id = atualizar_especialidade_medico(
+                    session["usuario_id"],
+                    especialidade,
+                )
+            except (psycopg.Error, DatabaseConfigurationError):
+                logger.exception("Falha ao atualizar a especialidade.")
+                mensagem = "Não foi possível atualizar sua especialidade."
+            else:
+                if medico_id is not None:
+                    return redirect(url_for("perfil_medico", sucesso="1"))
+                abort(404)
+
+    return render_template(
+        "perfil_medico.html",
+        titulo="Meu perfil",
+        perfil=perfil,
+        mensagem=mensagem,
+    )
+
 @app.route("/agenda-medico")
 @perfil_obrigatorio("medico")
 def agenda_medico():
@@ -472,8 +525,125 @@ def prontuario():
 @app.route("/administrador")
 @perfil_obrigatorio("administrador")
 def administrador():
-    return render_template("administrador.html")
+    try:
+        resumo = obter_resumo_administrador()
+        consultas_por_mes = listar_consultas_por_mes_administrador()
+        consultas_por_especialidade = (
+            listar_consultas_por_especialidade_administrador()
+        )
+        erro_resumo = None
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar o painel do administrador.")
+        resumo = None
+        consultas_por_mes = []
+        consultas_por_especialidade = []
+        erro_resumo = "Não foi possível carregar os indicadores."
 
+    maior_quantidade = max(
+        (linha[1] for linha in consultas_por_mes),
+        default=0,
+    )
+    meses_grafico = [
+        {
+            "mes": mes,
+            "quantidade": quantidade,
+            "altura": quantidade * 100 / maior_quantidade
+            if maior_quantidade
+            else 0,
+        }
+        for mes, quantidade in consultas_por_mes
+    ]
+
+    cores = [
+        "#123f70",
+        "#e7cda3",
+        "#79b8ed",
+        "#a6d0f3",
+        "#2e80c8",
+        "#20a77b",
+        "#7d6bc4",
+    ]
+    total_especialidades = sum(
+        quantidade for _, quantidade in consultas_por_especialidade
+    )
+    especialidades_grafico = []
+    fatias_pizza = []
+    inicio_fatia = 0
+
+    for indice, (nome, quantidade) in enumerate(consultas_por_especialidade):
+        percentual = (
+            quantidade * 100 / total_especialidades
+            if total_especialidades
+            else 0
+        )
+        fim_fatia = inicio_fatia + percentual
+        cor = cores[indice % len(cores)]
+
+        especialidades_grafico.append(
+            {
+                "nome": nome,
+                "quantidade": quantidade,
+                "percentual": round(percentual),
+                "cor": cor,
+            }
+        )
+        fatias_pizza.append(
+            f"{cor} {inicio_fatia:.2f}% {fim_fatia:.2f}%"
+        )
+        inicio_fatia = fim_fatia
+
+    donut_gradient = (
+        f"conic-gradient({', '.join(fatias_pizza)})"
+        if fatias_pizza
+        else "conic-gradient(#dce8f2 0 100%)"
+    )
+
+    return render_template(
+        "administrador.html",
+        titulo="Área do administrador",
+        nome_administrador=session.get("nome", "Administrador"),
+        resumo=resumo,
+        erro_resumo=erro_resumo,
+        meses_grafico=meses_grafico,
+        especialidades_grafico=especialidades_grafico,
+        donut_gradient=donut_gradient,
+    )
+
+@app.route("/pacientes-administrador")
+@perfil_obrigatorio("administrador")
+def pacientes_administrador():
+    try:
+        pacientes = listar_pacientes_administrador()
+        erro_pacientes = None
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar pacientes para o administrador.")
+        pacientes = []
+        erro_pacientes = "Não foi possível carregar os pacientes."
+
+    return render_template(
+        "pacientes_administrador.html",
+        titulo="Pacientes",
+        pacientes=pacientes,
+        erro_pacientes=erro_pacientes,
+    )
+
+@app.route("/agenda-administrador")
+@perfil_obrigatorio("administrador")
+def agenda_administrador():
+    try:
+        consultas = listar_consultas_administrador()
+        erro_agenda = None
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar a agenda do administrador.")
+        consultas = []
+        erro_agenda = "Não foi possível carregar as consultas."
+
+    return render_template(
+        "agenda_administrador.html",
+        titulo="Agenda",
+        consultas=consultas,
+        erro_agenda=erro_agenda,
+    )
 
 @app.route("/usuarios", methods=["GET", "POST"])
 @perfil_obrigatorio("administrador")
@@ -527,7 +697,20 @@ def usuarios():
 @app.route("/relatorios")
 @perfil_obrigatorio("administrador")
 def relatorios():
-    return render_template("relatorios.html")
+    try:
+        resumo = obter_resumo_administrador()
+        erro_relatorio = None
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar relatórios do administrador.")
+        resumo = None
+        erro_relatorio = "Não foi possível carregar os dados do relatório."
+
+    return render_template(
+        "relatorios.html",
+        titulo="Relatórios",
+        resumo=resumo,
+        erro_relatorio=erro_relatorio,
+    )
 
 @app.route("/relatorios-medico")
 @perfil_obrigatorio("medico")

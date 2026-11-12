@@ -1,0 +1,46 @@
+{% extends "base_administrador.html" %}
+
+{% block content %}
+    <h1>Agenda geral</h1>
+
+    <section class="panel">
+        {% if erro_agenda %}
+            <p>{{ erro_agenda }}</p>
+        {% elif consultas %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data e horário</th>
+                        <th>Paciente</th>
+                        <th>Médico</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in consultas %}
+                        <tr>
+                            <td>{{ consulta[1].strftime('%d/%m/%Y às %H:%M') }}</td>
+                            <td>{{ consulta[2] }}</td>
+                            <td>{{ consulta[3] }}</td>
+                            <td>
+                                {% if consulta[4] == 'agendada' %}
+                                    Agendada
+                                {% elif consulta[4] == 'confirmada' %}
+                                    Confirmada
+                                {% elif consulta[4] == 'concluida' %}
+                                    Concluída
+                                {% elif consulta[4] == 'cancelada' %}
+                                    Cancelada
+                                {% else %}
+                                    {{ consulta[4] }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Não há consultas cadastradas.</p>
+        {% endif %}
+    </section>
+{% endblock %}

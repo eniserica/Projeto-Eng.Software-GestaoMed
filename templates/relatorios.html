@@ -1,51 +1,42 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Relatórios</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    </head>
-<body>
-    <main class="page">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-            <h1>Relatórios</h1><button>＋ Exportar</button>
-        </div>
+{% extends "base_administrador.html" %}
 
-        <nav class="tabs">
-            <a class="active" href="#">Consultas</a>
-            <a href="#">Financeiro</a>
-            <a href="#">Pacientes</a>
-        </nav>
-        <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
-            <small>01/04/2025 - 30/04/2025</small>
-        </div>
+{% block content %}
+    <h1>Relatórios gerais</h1>
 
-        <section class="grid four">
-            <div class="panel metric">
-                <small>Total de consultas</small>
-                <strong>482</strong><small>↑ 12%</small>
-            </div>
-            <div class="panel metric"><small>Faltas</small>
-                <strong>8</strong><small>↓ 4%</small>
-            </div>
-            <div class="panel metric">
-                <small>Média de espera</small>
-                <strong>12 min</strong><small>↓ 30%</small>
-            </div>
-            <div class="panel metric">
-                <small>Receita estimada</small>
-                <strong>R$ 48.230</strong><small>↑ 10%</small>
-            </div>
-        </section>
-        <section class="grid two">
-            <div class="panel"><h2>Consultas por especialidade</h2>
-                <p>Clínica Geral <span style="float:right">32%</span><div style="height:8px;background:#eaf1f7;border-radius:5px"><div style="height:8px;width:32%;background:#2379c5;border-radius:5px"></div></div></p>
-      <p>Cardiologia <span style="float:right">18%</span><div style="height:8px;background:#eaf1f7;border-radius:5px"><div style="height:8px;width:18%;background:#2379c5;border-radius:5px"></div></div></p>
-      <p>Dermatologia <span style="float:right">15%</span><div style="height:8px;background:#eaf1f7;border-radius:5px"><div style="height:8px;width:15%;background:#2379c5;border-radius:5px"></div></div></p>
-      <p>Ginecologia <span style="float:right">12%</span><div style="height:8px;background:#eaf1f7;border-radius:5px"><div style="height:8px;width:12%;background:#2379c5;border-radius:5px"></div></div></p>
-      <p>Outras <span style="float:right">23%</span><div style="height:8px;background:#eaf1f7;border-radius:5px"><div style="height:8px;width:23%;background:#2379c5;border-radius:5px"></div></div></p>
-    </div>
-    <div class="panel"><h2>Distribuição por especialidade</h2><div class="donut"></div></div>
-  </section>
-</main></body></html>
+    <section class="panel">
+        {% if erro_relatorio %}
+            <p role="alert">{{ erro_relatorio }}</p>
+        {% elif resumo %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indicador</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Pacientes ativos</td>
+                        <td>{{ resumo[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Consultas registradas</td>
+                        <td>{{ resumo[1] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Médicos ativos</td>
+                        <td>{{ resumo[2] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Exames cadastrados</td>
+                        <td>{{ resumo[3] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="muted">
+                Receita e tempo de espera não aparecem porque esses dados não são registrados no banco.
+            </p>
+        {% endif %}
+    </section>
+{% endblock %}

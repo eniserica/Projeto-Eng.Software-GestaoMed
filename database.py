@@ -64,6 +64,122 @@ def listar_usuarios():
             )
             return cursor.fetchall()
 
+def listar_pacientes_administrador():
+    with conectar() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT u.id, u.nome, u.email, u.ativo
+                FROM pacientes p
+                JOIN usuarios u ON u.id = p.usuario_id
+                ORDER BY u.nome
+                """
+            )
+            return cursor.fetchall()
+
+def listar_consultas_administrador():
+    with conectar() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT
+                    c.id,
+                    c.inicio AT TIME ZONE 'America/Maceio',
+                    paciente_usuario.nome,
+                    medico_usuario.nome,
+                    c.status
+                FROM consultas c
+                JOIN pacientes p ON p.id = c.paciente_id
+                JOIN usuarios paciente_usuario ON paciente_usuario.id = p.usuario_id
+                JOIN medicos m ON m.id = c.medico_id
+                JOIN usuarios medico_usuario ON medico_usuario.id = m.usuario_id
+                ORDER BY c.inicio DESC
+                """
+            )
+            return cursor.fetchall()
+
+def obter_resumo_administrador():
+    with conectar() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT
+                    (
+                        SELECT COUNT(*)
+                        FROM pacientes p
+                        JOIN usuarios u ON u.id = p.usuario_id
+                        WHERE u.ativo = TRUE
+                    ),
+                    (
+                        SELECT COUNT(*)
+                        FROM consultas
+                    ),
+                    (
+                        SELECT COUNT(*)
+                        FROM medicos m
+                        JOIN usuarios u ON u.id = m.usuario_id
+                        WHERE u.ativo = TRUE
+                    ),
+                    (
+                        SELECT COUNT(*)
+                        FROM exames
+                    )
+                """
+            )
+            return cursor.fetchone()
+
+def listar_consultas_por_mes_administrador():
+    with conectar() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                WITH meses AS (
+                    SELECT generate_series(
+                        date_trunc(
+                            'month',
+                            NOW() AT TIME ZONE 'America/Maceio'
+                        ) - interval '5 months',
+                        date_trunc(
+                            'month',
+                            NOW() AT TIME ZONE 'America/Maceio'
+                        ),
+                        interval '1 month'
+                    ) AS mes
+                )
+                SELECT
+                    to_char(meses.mes, 'MM/YY'),
+                    COUNT(c.id)
+                FROM meses
+                LEFT JOIN consultas c
+                    ON date_trunc(
+                        'month',
+                        c.inicio AT TIME ZONE 'America/Maceio'
+                    ) = meses.mes
+                GROUP BY meses.mes
+                ORDER BY meses.mes
+                """
+            )
+            return cursor.fetchall()
+
+def listar_consultas_por_especialidade_administrador():
+    with conectar() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT
+                    COALESCE(
+                        NULLIF(BTRIM(m.especialidade), ''),
+                        'Não informada'
+                    ),
+                    COUNT(c.id)
+                FROM consultas c
+                JOIN medicos m ON m.id = c.medico_id
+                GROUP BY 1
+                ORDER BY COUNT(c.id) DESC, 1
+                """
+            )
+            return cursor.fetchall()
+
 def listar_medicos_ativos():
     with conectar() as conn:
         with conn.cursor() as cursor:
@@ -371,7 +487,36 @@ def obter_perfil_paciente(usuario_id):
                 (usuario_id,),
             )
             return cursor.fetchone()
-        
+
+def obter_perfil_medico(usuario_id):
+    with conectar() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT u.nome, u.email, m.crm, m.especialidade
+                FROM usuarios u
+                JOIN medicos m ON m.usuario_id = u.id
+                WHERE u.id = %s
+                """,
+                (usuario_id,),
+            )
+            return cursor.fetchone()
+
+
+def atualizar_especialidade_medico(usuario_id, especialidade):
+    with conectar() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                UPDATE medicos
+                SET especialidade = %s
+                WHERE usuario_id = %s
+                RETURNING id
+                """,
+                (especialidade, usuario_id),
+            )
+            medico = cursor.fetchone()
+            return medico[0] if medico else None
 
 def authenticate_user(email):
     with conectar() as conn:

@@ -1,0 +1,30 @@
+{% extends "base_medico.html" %}
+
+{% block content %}
+    <h1>Meu perfil</h1>
+
+    {% if mensagem %}
+        <p role="status">{{ mensagem }}</p>
+    {% endif %}
+
+    <section class="panel">
+        <p><strong>Nome:</strong> {{ perfil[0] }}</p>
+        <p><strong>E-mail:</strong> {{ perfil[1] }}</p>
+        <p><strong>CRM:</strong> {{ perfil[2] or "Não informado" }}</p>
+
+        <form method="POST">
+            <label for="especialidade">Especialidade</label>
+            <input
+                id="especialidade"
+                name="especialidade"
+                type="text"
+                value="{{ perfil[3] or '' }}"
+                maxlength="120"
+                placeholder="Ex.: Cardiologia"
+                required
+            >
+
+            <button type="submit">Salvar especialidade</button>
+        </form>
+    </section>
+{% endblock %}

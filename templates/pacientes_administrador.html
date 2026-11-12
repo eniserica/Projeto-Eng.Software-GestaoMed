@@ -1,0 +1,38 @@
+{% extends "base_administrador.html" %}
+
+{% block content %}
+    <h1>Pacientes</h1>
+
+    <section class="panel">
+        {% if erro_pacientes %}
+            <p>{{ erro_pacientes }}</p>
+        {% elif pacientes %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paciente in pacientes %}
+                        <tr>
+                            <td>{{ paciente[1] }}</td>
+                            <td>{{ paciente[2] }}</td>
+                            <td>
+                                {% if paciente[3] %}
+                                    Ativo
+                                {% else %}
+                                    Inativo
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Nenhum paciente cadastrado.</p>
+        {% endif %}
+    </section>
+{% endblock %}
