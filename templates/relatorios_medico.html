@@ -1,0 +1,38 @@
+{% extends "base_medico.html" %}
+
+{% block content %}
+    <h1>Relatórios do médico</h1>
+
+    <section class="panel">
+        {% if erro_relatorio %}
+            <p>{{ erro_relatorio }}</p>
+        {% elif resumo %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indicador</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Consultas registradas</td>
+                        <td>{{ resumo[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Pacientes com consultas não canceladas</td>
+                        <td>{{ resumo[1] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Exames solicitados</td>
+                        <td>{{ resumo[2] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Prontuários criados</td>
+                        <td>{{ resumo[3] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+{% endblock %}

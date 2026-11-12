@@ -737,3 +737,133 @@ body.pagina-inicial {
   text-align: center;
 }
 
+.cabecalho-paciente {
+    min-height: 140px;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    background: #eaf3ff;
+    color: #123f70;
+}
+
+.cabecalho-paciente h1 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+}
+
+.cabecalho-paciente p {
+    margin: 0;
+    color: #55708c;
+    font-size: 0.85rem;
+}
+
+.paciente-container {
+    height: calc(100vh - 70px);
+}
+
+.menu-paciente,
+.conteudo-paciente {
+    height: 100%;
+}
+body.pagina-paciente {
+    padding: 0;
+    background: #fff;
+    color: #172033;
+}
+
+.menu-paciente {
+    width: 25%;
+    padding: 24px 14px;
+    align-items: stretch;
+    background: #0b2f55;
+}
+
+.menu-paciente img {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    object-fit: contain;
+    align-self: center;
+    margin-bottom: 16px;
+}
+
+.icons-menu {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 7px;
+}
+
+.icons-menu h3 {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.icons-menu:first-of-type {
+    background: #15518a;
+}
+
+.main-content form label {
+  display: block;
+  margin: 12px 0 6px;
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.main-content input:not([type="checkbox"]):not([type="radio"]),
+.main-content select,
+.main-content textarea {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--texto);
+  font: inherit;
+}
+
+.main-content textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.main-content input:focus,
+.main-content select:focus,
+.main-content textarea:focus {
+  outline: none;
+  border-color: var(--azul);
+  box-shadow: 0 0 0 3px rgba(18, 63, 112, 0.13);
+}
+
+.main-content button,
+.main-content .btn-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid var(--azul);
+  border-radius: 8px;
+  background: var(--azul);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.main-content button:hover,
+.main-content .btn-info:hover {
+  background: var(--azul-escuro);
+  border-color: var(--azul-escuro);
+  box-shadow: 0 3px 8px rgba(8, 43, 80, 0.18);
+  transform: translateY(-1px);
+}
+
+.main-content button:focus-visible,
+.main-content .btn-info:focus-visible {
+  outline: 3px solid rgba(18, 63, 112, 0.2);
+  outline-offset: 2px;
+}

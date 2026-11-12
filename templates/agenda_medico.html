@@ -1,0 +1,42 @@
+{% extends "base_medico.html" %}
+
+{% block content %}
+    <h1>Agenda completa</h1>
+
+    <section class="panel">
+        {% if erro_agenda %}
+            <p>{{ erro_agenda }}</p>
+        {% elif consultas %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data e horário</th>
+                        <th>Paciente</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in consultas %}
+                        <tr>
+                            <td>{{ consulta[1].strftime('%d/%m/%Y às %H:%M') }}</td>
+                            <td>{{ consulta[2] }}</td>
+                            <td>
+                                {% if consulta[3] == 'agendada' %}
+                                    Agendada
+                                {% elif consulta[3] == 'confirmada' %}
+                                    Confirmada
+                                {% elif consulta[3] == 'concluida' %}
+                                    Concluída
+                                {% else %}
+                                    {{ consulta[3] }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Você ainda não tem consultas registradas.</p>
+        {% endif %}
+    </section>
+{% endblock %}

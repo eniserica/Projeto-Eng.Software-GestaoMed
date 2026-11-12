@@ -1,0 +1,37 @@
+{% extends "base_paciente.html" %}
+
+{% block content %}
+    <h1>Agendar consulta</h1>
+
+    {% if mensagem %}
+        <p role="status">{{ mensagem }}</p>
+    {% endif %}
+
+    <section class="panel">
+        {% if medicos %}
+            <form method="POST">
+                <label for="medico_id">Escolha o médico</label>
+                <select id="medico_id" name="medico_id" required>
+                    <option value="">Selecione um médico</option>
+                    {% for medico in medicos %}
+                        <option value="{{ medico[0] }}">
+                            {{ medico[1] }} — {{ medico[2] }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="inicio">Data e horário</label>
+                <input
+                    id="inicio"
+                    name="inicio"
+                    type="datetime-local"
+                    required
+                >
+
+                <button type="submit">Confirmar agendamento</button>
+            </form>
+        {% else %}
+            <p>Não há médicos disponíveis para agendamento.</p>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base_paciente.html" %}
+
+{% block content %}
+    <h1>Meu perfil</h1>
+
+    <section class="panel">
+        <dl>
+            <dt>Nome</dt>
+            <dd>{{ perfil[0] }}</dd>
+
+            <dt>E-mail</dt>
+            <dd>{{ perfil[1] }}</dd>
+
+            <dt>CPF</dt>
+            <dd>{{ perfil[2] or "Não informado" }}</dd>
+
+            <dt>Telefone</dt>
+            <dd>{{ perfil[3] or "Não informado" }}</dd>
+
+            <dt>Data de nascimento</dt>
+            <dd>
+                {% if perfil[4] %}
+                    {{ perfil[4].strftime('%d/%m/%Y') }}
+                {% else %}
+                    Não informado
+                {% endif %}
+            </dd>
+        </dl>
+    </section>
+{% endblock %}

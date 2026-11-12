@@ -1,0 +1,37 @@
+{% extends "base_medico.html" %}
+
+{% block content %}
+    <h1>Solicitar exame</h1>
+
+    {% if mensagem %}
+        <p role="status">{{ mensagem }}</p>
+    {% endif %}
+
+    <section class="panel">
+        {% if consultas %}
+            <form method="POST">
+                <label for="consulta_id">Consulta e paciente</label>
+                <select id="consulta_id" name="consulta_id" required>
+                    <option value="">Selecione uma consulta</option>
+                    {% for consulta in consultas %}
+                        <option value="{{ consulta[0] }}">
+                            {{ consulta[2] }} — {{ consulta[1].strftime('%d/%m/%Y às %H:%M') }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="descricao">Exame solicitado</label>
+                <textarea
+                    id="descricao"
+                    name="descricao"
+                    maxlength="300"
+                    required
+                ></textarea>
+
+                <button type="submit">Solicitar exame</button>
+            </form>
+        {% else %}
+            <p>Você ainda não tem consultas para associar a um exame.</p>
+        {% endif %}
+    </section>
+{% endblock %}

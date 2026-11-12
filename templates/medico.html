@@ -1,90 +1,56 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ titulo }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <main>
-        <div class = "medico-container">
-            <div class = "menu-medico">
-                <img src="{{ url_for('imagens', filename='logo-fundoAzul.png') }}" alt="Logo do sistema" > 
-                <div class = "icons-menu">
-                    <h3>Inicio</h3>
-                </div>
-                <div class = "icons-menu">
-                    <h3>Agenda</h3>
-                </div>
-                <div class = "icons-menu">
-                    <h3>Pacientes</h3>
-                </div>
-                <div class = "icons-menu">
-                    <h3>Prontuário</h3>
-                </div>
-                <div class = "icons-menu">
-                    <h3>Relatórios</h3>
-                </div>
-                <div class="icons-menu">
-                    <h3><a href="{{ url_for('logout') }}">Sair</a></h3>
-                </div>
-            </div>
+{% extends "base_medico.html" %}
 
-            <div class = "conteudo-medico">
-                <h1>Bem-vindo, {{ nome_medico }}!</h1>
-                <br>
-                <p>Médico(a) | CRM {{ crm_medico }} </p>
-                
-            <div class = "cards-medico">
-                
-                <div class = "card-consultas">
-                    <img src="{{ url_for('imagens', filename='icon-calendario-png.png') }}" alt="Ícone de calendário">
-                    <p>Hoje</p>
-                    <h4>10 consultas</h4>
-                </div>
-               
-                <div class = "card-pacientes">
-                    <img src="{{ url_for('imagens', filename='icon-pessoa-png.png') }}" alt="Ícone de pessoa">
-                    <p>Pacientes em espera</p>
-                    <h4>2 pacientes</h4>
-                </div>     
-                
-                <div class = "card-prontuario">
-                    <img src="{{ url_for('imagens', filename='icon-prontuario-png.png') }}" alt="Ícone de prontuário">
-                    <p>Prontuários pendentes</p>
-                    <h4>5 prontuários</h4>
-                </div>
-            </div>
-                <div class = "agenda-container">
-                    <h3>Agenda de hoje</h3>
-                    <p>Ver agenda completa</p>
+{% block content %}
+    <h1>Bem-vindo, {{ nome_medico }}!</h1>
+    <p class="muted">Área do médico</p>
 
-                    <div class = "agenda-card">
-                        <div class = "horario-consulta">
-                            <h3>14:00</h3>
-                        </div>
-                        <div class = "info-consulta">
-                            <h3>Clinica Geral</h3>
-                            <h4>Dr. João Silva</h4>
-                            <p>Paciente: Maria Souza</p>
-                        </div>
-                    </div>
-                    <div class = "agenda-card">
-                        <div class = "horario-consulta">
-                            <h3>14:00</h3>
-                        </div>
-                        <div class = "info-consulta">
-                            <h3>Clinica Geral</h3>
-                            <h4>Dr. João Silva</h4>
-                            <p>Paciente: Érica Santos</p>
-                        </div>
-                    </div>
-                </div>
-            </div>     
-
+    <section class="grid three">
+        <div class="panel metric">
+            <small>Consultas hoje</small>
+            {% if erro_dados %}
+                <strong>Indisponível</strong>
+            {% else %}
+                <strong>{{ consultas_hoje|length }}</strong>
+            {% endif %}
         </div>
 
-    </main>
-</body>
-</html>
+        <div class="panel metric">
+            <small>Pacientes com consultas</small>
+            {% if erro_dados %}
+                <strong>Indisponível</strong>
+            {% else %}
+                <strong>{{ pacientes|length }}</strong>
+            {% endif %}
+        </div>
+
+        <div class="panel metric">
+            <small>Consultas sem prontuário</small>
+            {% if erro_dados %}
+                <strong>Indisponível</strong>
+            {% else %}
+                <strong>{{ consultas_sem_prontuario|length }}</strong>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Agenda de hoje</h2>
+        <p><a href="{{ url_for('agenda_medico') }}">Ver agenda completa</a></p>
+
+        {% if erro_agenda %}
+            <p>{{ erro_agenda }}</p>
+        {% elif consultas_hoje %}
+            {% for consulta in consultas_hoje %}
+                <article class="entry">
+                    <div>
+                        <strong>{{ consulta[1].strftime('%H:%M') }}</strong>
+                        <p>Paciente: {{ consulta[2] }}</p>
+                        <p>Status: {{ consulta[3]|capitalize }}</p>
+                    </div>
+                </article>
+            {% endfor %}
+        {% else %}
+            <p>Você não tem consultas agendadas para hoje.</p>
+        {% endif %}
+    </section>
+{% endblock %}

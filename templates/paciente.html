@@ -1,86 +1,45 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ titulo }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <main>
-        <div class = "paciente-container">
-            <div class = "menu-paciente">
-                <img src="{{ url_for('imagens', filename='logo-fundoAzul.png') }}" alt="Logo do sistema" > 
-                <div class = "icons-menu">
-                    <h3>Inicio</h3>
-                </div>
-                <div class = "icons-menu">
-                    <h3>Minhas consultas</h3>
-                </div>
-                <div class = "icons-menu">
-                    <h3>Meu perfil</h3>
-                </div>
-                <div class = "icons-menu">
-                    <h3>Agendamentos</h3>
-                </div>
-                <div class = "icons-menu">
-                    <h3>Exames</h3>
-                </div>
-                <div class = "icons-menu">
-                    <h3><a href="{{ url_for('logout') }}">Sair</a></h3>
-                </div>
-            </div>
-            <div class = "conteudo-paciente">
-                <h1>Bem-vindo, {{ nome_paciente }}!</h1>
-                <br>
-                <h2>Olá, {{ nome_paciente }}!</h1>
-                <p>Confira suas próximas consultas: </p>
+{% extends "base_paciente.html" %}
 
-                <div class = "consultas-container">
+{% block content %}
+    <h1>Olá, {{ nome_paciente }}!</h1>
+    <p class="muted">Acompanhe suas consultas e exames.</p>
 
-                        <div class = "consulta-card">
-                            <div class = "data-consulta">
-                               <h3>24 Out</h3>
-                            </div>
-                            <div class = "info-consulta">
-                                <h3>Clinica Geral</h3>
-                                <h4>Dr. João Silva</h4>
-                                <p>Horário: 14:00</p>
-                            </div>
-                            <div class = "status-consulta">
-                                <p>Confirmada</p>
-                            </div>
-                        </div>
-                        
-                </div>
-                <button class = "btn-info">Ver Detalhes</button>
-                
-                <div class = "historico-consultas">
-                    <div class = "historico-header">
-                        <h2>Histórico de Consultas</h2>
-                        <a href = "#">Ver todas</a>
+    <section class="panel">
+        <h2>Próxima consulta</h2>
+
+        {% if erro_consultas %}
+            <p>{{ erro_consultas }}</p>
+        {% elif proximas %}
+            {% set consulta = proximas[0] %}
+            <p><strong>{{ consulta[4] }}</strong></p>
+            <p>Médico: {{ consulta[3] }}</p>
+            <p>Data e horário: {{ consulta[0].strftime('%d/%m/%Y às %H:%M') }}</p>
+            <p>Status: {{ consulta[1]|capitalize }}</p>
+        {% else %}
+            <p>Você ainda não tem consultas agendadas.</p>
+        {% endif %}
+
+        <a class="btn-info" href="{{ url_for('agendamentos') }}">Agendar consulta</a>
+    </section>
+
+    <section class="panel" id="minhas-consultas">
+        <h2>Minhas consultas</h2>
+
+        {% if erro_consultas %}
+            <p>{{ erro_consultas }}</p>
+        {% elif consultas %}
+            {% for consulta in consultas %}
+                <article class="entry">
+                    <div>
+                        <strong>{{ consulta[3] }}</strong>
+                        <p>{{ consulta[4] }}</p>
+                        <p>{{ consulta[0].strftime('%d/%m/%Y às %H:%M') }}</p>
+                        <p>Status: {{ consulta[1]|capitalize }}</p>
                     </div>
-
-                    <div class = "historico-card">
-                        <div class = "data-historico">
-                            <h3>Data</h3>
-                            <h3>24/10/2026</h3>
-                        </div>
-
-                        <div class = "especialidade-historico">
-                            <h3>Especialidade</h3>
-                            <h3>Clínica Geral</h3>
-                        </div>
-
-                        <div class = "status-historico">
-                            <h3>Status</h3>
-                            <h3>Confirmada</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>       
-        </div>
-            
-    </main>
-</body>
-</html>
+                </article>
+            {% endfor %}
+        {% else %}
+            <p>Você ainda não possui consultas.</p>
+        {% endif %}
+    </section>
+{% endblock %}

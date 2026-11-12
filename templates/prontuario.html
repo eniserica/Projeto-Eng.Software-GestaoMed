@@ -1,54 +1,68 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Prontuário do paciente</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    </head>
-<body>
-    <main class="page">
-        <h1>‹ Voltar &nbsp; Prontuário do paciente</h1>
-        <section class="panel profile">
-            <div class="avatar">AC</div>
-            <div>
-                <h2 style="margin-bottom:5px">Ana Clara Santos</h2>
-                <small>29 anos • CPF 123.456.789-00</small>
-            </div>
-        </section>
+{% extends "base_medico.html" %}
 
-        <nav class="tabs">
-            <a class="active" href="#">Histórico</a>
-            <a href="#">Dados pessoais</a>
-            <a href="#">Exames</a>
-            <a href="#">Prescrições</a>
-            <a href="#">Anotações</a>
-        </nav>
-        <section class="panel">
-            <div class="entry">
-                <div class="entry-icon">●</div>
-                <div>
-                    <small>Consulta - 15/04/2025</small>
-                    <p style="margin:6px 0 4px">Clínica Geral</p>
-                    <small>Paciente relata melhora no quadro de dor. Mantido tratamento.</small>
-                </div>
-            </div>
-            <div class="entry">
-                <div class="entry-icon">●</div>
-                <div>
-                    <small>Consulta - 22/03/2025</small>
-                    <p style="margin:6px 0 4px">Clínica Geral</p>
-                    <small>Solicitado exames laboratoriais. Retorno em 30 dias.</small>
-                </div>
-            </div>
-            <div class="entry">
-                <div class="entry-icon">♧</div>
-                <div style="flex:1">
-                    <small>Exame - 12/03/2025</small>
-                    <p style="margin:6px 0 4px">Hemograma Completo</p>
-                    <small>Laboratório Vida</small>
-                </div>
-                <span class="pill">Resultado disponível</span>
-            </div>
-        </section>
-</main></body></html>
+{% block content %}
+    <h1>Prontuário</h1>
+
+    {% if mensagem %}
+        <p role="status">{{ mensagem }}</p>
+    {% endif %}
+
+    <section class="panel">
+        <h2>Novo prontuário</h2>
+
+        {% if consultas %}
+            <form method="POST">
+                <label for="consulta_id">Consulta e paciente</label>
+                <select id="consulta_id" name="consulta_id" required>
+                    <option value="">Selecione uma consulta</option>
+                    {% for consulta in consultas %}
+                        <option value="{{ consulta[0] }}">
+                            {{ consulta[2] }} — {{ consulta[1].strftime('%d/%m/%Y às %H:%M') }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="diagnostico">Diagnóstico</label>
+                <textarea id="diagnostico" name="diagnostico" required></textarea>
+
+                <label for="tratamento">Tratamento</label>
+                <textarea id="tratamento" name="tratamento"></textarea>
+
+                <label for="notas">Notas</label>
+                <textarea id="notas" name="notas"></textarea>
+
+                <button type="submit">Salvar prontuário</button>
+            </form>
+        {% else %}
+            <p>Não há consultas disponíveis para criar prontuário.</p>
+        {% endif %}
+    </section>
+
+    <section class="panel">
+        <h2>Prontuários já registrados</h2>
+
+        {% if prontuarios %}
+            {% for registro in prontuarios %}
+                <article class="entry">
+                    <div>
+                        <h3>{{ registro[2] }}</h3>
+                        <small>
+                            Consulta em {{ registro[1].strftime('%d/%m/%Y às %H:%M') }}
+                        </small>
+                        <p><strong>Diagnóstico:</strong> {{ registro[3] }}</p>
+
+                        {% if registro[4] %}
+                            <p><strong>Tratamento:</strong> {{ registro[4] }}</p>
+                        {% endif %}
+
+                        {% if registro[5] %}
+                            <p><strong>Notas:</strong> {{ registro[5] }}</p>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        {% else %}
+            <p>Você ainda não registrou prontuários.</p>
+        {% endif %}
+    </section>
+{% endblock %}

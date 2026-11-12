@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo|default('GestãoMed') }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="sidebar-layout">
+        <aside class="sidebar">
+            <div class="brand">✚ GestãoMed</div>
+
+            <a href="{{ url_for('paciente') }}">⌂ &nbsp; Início</a>
+            <a href="{{ url_for('paciente') }}#minhas-consultas">♧ &nbsp; Minhas consultas</a>
+            <a href="{{ url_for('agendamentos') }}">▦ &nbsp; Agendamentos</a>
+            <a href="{{ url_for('exames') }}">▤ &nbsp; Exames</a>
+            <a href="{{ url_for('perfil_paciente') }}">♙ &nbsp; Meu perfil</a>
+            <a href="{{ url_for('logout') }}">Sair</a>
+        </aside>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

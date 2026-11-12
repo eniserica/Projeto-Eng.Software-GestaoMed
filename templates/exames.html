@@ -1,48 +1,61 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus exames</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <main class="page">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-            <h1>♙ &nbsp; Meus exames</h1>
-            <a href="#" class="muted">Ver todos</a>
-        </div>
+{% extends "base_paciente.html" %}
 
-        <nav class="tabs">
-            <a class="active" href="#">Pendentes</a>
-            <a href="#">Concluídos</a>
-        </nav>
-        <section class="panel">
+{% block content %}
+    <h1>Meus exames</h1>
+
+    <section class="panel">
+        {% if erro_exames %}
+            <p>{{ erro_exames }}</p>
+        {% elif exames %}
             <table>
                 <thead>
                     <tr>
                         <th>Exame</th>
-                        <th>Data</th>
+                        <th>Solicitado em</th>
+                        <th>Médico</th>
                         <th>Status</th>
+                        <th>Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Ultrassom Abdome Total</td>
-                        <td>12 Abr, 2025</td>
-                        <td><span class="pill">▣ Resultado disponível</span></td>
-                    </tr>
-                    <tr>
-                        <td>Hemograma Completo</td>
-                        <td>06 Abr, 2025</td>
-                        <td><span class="pill">▣ Concluído</span></td>
-                    </tr>
-                    <tr>
-                        <td>Ressonância Magnética</td>
-                        <td>06 Abr, 2025</td>
-                        <td><span class="pill">▣ Concluído</span></td>
-                    </tr>
+                    {% for exame in exames %}
+                        <tr>
+                            <td>{{ exame[0] }}</td>
+                            <td>{{ exame[1].strftime('%d/%m/%Y às %H:%M') }}</td>
+                            <td>{{ exame[5] }}</td>
+                            <td>
+                                {% if exame[2] == 'solicitado' %}
+                                    Solicitado
+                                {% elif exame[2] == 'em_andamento' %}
+                                    Em andamento
+                                {% elif exame[2] == 'concluido' %}
+                                    Concluído
+                                {% elif exame[2] == 'cancelado' %}
+                                    Cancelado
+                                {% else %}
+                                    {{ exame[2] }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if exame[3] %}
+                                    {{ exame[3] }}
+                                {% else %}
+                                    Ainda não disponível
+                                {% endif %}
+
+                                {% if exame[4] %}
+                                    <br>
+                                    <a href="{{ exame[4] }}" target="_blank" rel="noopener">
+                                        Abrir arquivo
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
-        </section>
-</main></body></html>
+        {% else %}
+            <p>Você ainda não tem exames cadastrados.</p>
+        {% endif %}
+    </section>
+{% endblock %}

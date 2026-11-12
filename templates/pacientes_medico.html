@@ -1,0 +1,30 @@
+{% extends "base_medico.html" %}
+
+{% block content %}
+    <h1>Meus pacientes</h1>
+
+    <section class="panel">
+        {% if erro_pacientes %}
+            <p>{{ erro_pacientes }}</p>
+        {% elif pacientes %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paciente in pacientes %}
+                        <tr>
+                            <td>{{ paciente[1] }}</td>
+                            <td>{{ paciente[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Você ainda não tem pacientes com consultas registradas.</p>
+        {% endif %}
+    </section>
+{% endblock %}

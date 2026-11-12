@@ -2,9 +2,11 @@ import logging
 import os
 import secrets
 from functools import wraps
-
 import psycopg
 from dotenv import load_dotenv
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 from flask import (
     Flask,
     abort,
@@ -21,6 +23,20 @@ from database import (
     DatabaseConfigurationError,
     authenticate_user,
     register_user,
+    criar_consulta,
+    listar_medicos_ativos,
+    listar_consultas_paciente,
+    obter_perfil_paciente,
+    listar_exames_paciente,
+    listar_consultas_medico,
+    criar_exame_medico,
+    listar_agenda_medico,
+    listar_consultas_sem_prontuario,
+    criar_prontuario_medico,
+    listar_prontuarios_medico,
+    listar_pacientes_medico,
+    obter_resumo_medico,
+    listar_usuarios,
 )
 
 load_dotenv()
@@ -157,38 +173,300 @@ def cadastro():
         mensagem=mensagem,
     ), status
 
+@app.route("/perfil")
+@perfil_obrigatorio("paciente")
+def perfil_paciente():
+    try:
+        perfil = obter_perfil_paciente(session["usuario_id"])
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar perfil do paciente.")
+        return "Não foi possível carregar seu perfil.", 503
+
+    if perfil is None:
+        abort(404)
+
+    return render_template(
+        "perfil_paciente.html",
+        titulo="Meu perfil",
+        perfil=perfil,
+    )
+
+@app.route("/agendamentos", methods=["GET", "POST"])
+@perfil_obrigatorio("paciente")
+def agendamentos():
+    mensagem = (
+        "Consulta agendada com sucesso."
+        if request.args.get("sucesso") == "1"
+        else None
+    )
+    status = 200
+
+    try:
+        medicos = listar_medicos_ativos()
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao buscar médicos para agendamento.")
+        return "Não foi possível carregar os médicos.", 503
+
+    if request.method == "POST":
+        try:
+            medico_id = int(request.form.get("medico_id", ""))
+            inicio = datetime.fromisoformat(request.form.get("inicio", ""))
+        except ValueError:
+            mensagem = "Selecione um médico e informe uma data e horário válidos."
+        else:
+            fuso = ZoneInfo("America/Maceio")
+            if inicio.tzinfo is None:
+                inicio = inicio.replace(tzinfo=fuso)
+
+            if inicio <= datetime.now(fuso):
+                mensagem = "Escolha uma data e horário futuros."
+            elif not any(medico[0] == medico_id for medico in medicos):
+                mensagem = "O médico selecionado não é válido."
+            else:
+                try:
+                    consulta_id, mensagem = criar_consulta(
+                        session["usuario_id"],
+                        medico_id,
+                        inicio,
+                    )
+                except (psycopg.Error, DatabaseConfigurationError):
+                    logger.exception("Falha ao salvar o agendamento.")
+                    mensagem = "Não foi possível salvar o agendamento."
+                    status = 503
+                else:
+                    if consulta_id is not None:
+                        return redirect(url_for("agendamentos", sucesso="1"))
+
+    if not medicos and mensagem is None:
+        mensagem = "Ainda não há médicos cadastrados."
+
+    return render_template(
+        "agendamentos.html",
+        titulo="Agendar consulta",
+        medicos=medicos,
+        mensagem=mensagem,
+    ), status
+
 
 @app.route("/paciente")
 @perfil_obrigatorio("paciente")
 def paciente():
+    erro_consultas = None
+
+    try:
+        consultas = listar_consultas_paciente(session["usuario_id"])
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao buscar consultas do paciente.")
+        consultas = []
+        erro_consultas = "Não foi possível carregar suas consultas."
+    
+    agora = datetime.now(ZoneInfo("America/Maceio")).replace(tzinfo=None)
+    proximas = [
+        consulta
+        for consulta in consultas
+        if consulta[0] >= agora
+        and consulta[1] in ("agendada", "confirmada")
+    ]
+
     return render_template(
         "paciente.html",
         titulo="Área do paciente",
         nome_paciente=session.get("nome", "Paciente"),
+        consultas=consultas,
+        proximas=proximas,
+        erro_consultas=erro_consultas,
     )
 
 
 @app.route("/medico")
 @perfil_obrigatorio("medico")
 def medico():
+    try:
+        usuario_id = session["usuario_id"]
+        consultas_hoje = listar_agenda_medico(usuario_id)
+        pacientes = listar_pacientes_medico(usuario_id)
+        consultas_sem_prontuario = listar_consultas_sem_prontuario(usuario_id)
+        erro_dados = None
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar dados do médico.")
+        consultas_hoje = []
+        pacientes = []
+        consultas_sem_prontuario = []
+        erro_dados = "Não foi possível carregar os dados do painel."
+
     return render_template(
         "medico.html",
         titulo="Área do médico",
         nome_medico=session.get("nome", "Médico"),
         crm_medico="",
+        consultas_hoje=consultas_hoje,
+        pacientes=pacientes,
+        consultas_sem_prontuario=consultas_sem_prontuario,
+        erro_agenda=erro_dados,
+        erro_dados=erro_dados,
     )
 
+@app.route("/agenda-medico")
+@perfil_obrigatorio("medico")
+def agenda_medico():
+    try:
+        consultas_agenda = listar_consultas_medico(session["usuario_id"])
+        erro_agenda = None
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar a agenda completa do médico.")
+        consultas_agenda = []
+        erro_agenda = "Não foi possível carregar a agenda."
+
+    return render_template(
+        "agenda_medico.html",
+        titulo="Agenda do médico",
+        consultas=consultas_agenda,
+        erro_agenda=erro_agenda,
+    )
+
+@app.route("/pacientes-medico")
+@perfil_obrigatorio("medico")
+def pacientes_medico():
+    try:
+        pacientes = listar_pacientes_medico(session["usuario_id"])
+        erro_pacientes = None
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar pacientes do médico.")
+        pacientes = []
+        erro_pacientes = "Não foi possível carregar os pacientes."
+
+    return render_template(
+        "pacientes_medico.html",
+        titulo="Meus pacientes",
+        pacientes=pacientes,
+        erro_pacientes=erro_pacientes,
+    )
+
+@app.route("/solicitar-exame", methods=["GET", "POST"])
+@perfil_obrigatorio("medico")
+def solicitar_exame():
+    mensagem = (
+        "Exame solicitado com sucesso."
+        if request.args.get("sucesso") == "1"
+        else None
+    )
+    status = 200
+
+    try:
+        consultas_medico = listar_consultas_medico(session["usuario_id"])
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao buscar consultas do médico.")
+        return "Não foi possível carregar as consultas.", 503
+
+    if request.method == "POST":
+        descricao = request.form.get("descricao", "").strip()
+
+        try:
+            consulta_id = int(request.form.get("consulta_id", ""))
+        except ValueError:
+            mensagem = "Selecione uma consulta válida."
+        else:
+            if not descricao:
+                mensagem = "Informe a descrição do exame."
+            elif len(descricao) > 300:
+                mensagem = "A descrição deve ter no máximo 300 caracteres."
+            else:
+                try:
+                    exame_id = criar_exame_medico(
+                        session["usuario_id"],
+                        consulta_id,
+                        descricao,
+                    )
+                except (psycopg.Error, DatabaseConfigurationError):
+                    logger.exception("Falha ao solicitar exame.")
+                    mensagem = "Não foi possível solicitar o exame."
+                    status = 503
+                else:
+                    if exame_id is not None:
+                        return redirect(
+                            url_for("solicitar_exame", sucesso="1")
+                        )
+                    mensagem = "A consulta selecionada não pertence a você."
+
+    return render_template(
+        "solicitar_exame.html",
+        titulo="Solicitar exame",
+        consultas=consultas_medico,
+        mensagem=mensagem,
+    ), status
 
 @app.route("/exames")
 @perfil_obrigatorio("paciente")
 def exames():
-    return render_template("exames.html")
+    try:
+        exames_paciente = listar_exames_paciente(session["usuario_id"])
+        erro_exames = None
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao buscar exames do paciente.")
+        exames_paciente = []
+        erro_exames = "Não foi possível carregar seus exames."
+
+    return render_template(
+        "exames.html",
+        exames=exames_paciente,
+        erro_exames=erro_exames,
+    )
 
 
-@app.route("/prontuario")
-@perfil_obrigatorio("medico", "administrador")
+@app.route("/prontuario", methods=["GET", "POST"])
+@perfil_obrigatorio("medico")
 def prontuario():
-    return render_template("prontuario.html")
+    mensagem = (
+        "Prontuário salvo com sucesso."
+        if request.args.get("sucesso") == "1"
+        else None
+    )
+
+    try:
+        consultas = listar_consultas_sem_prontuario(session["usuario_id"])
+        prontuarios = listar_prontuarios_medico(session["usuario_id"])
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar dados do prontuário.")
+        return "Não foi possível carregar os prontuários.", 503
+
+    if request.method == "POST":
+        diagnostico = request.form.get("diagnostico", "").strip()
+        tratamento = request.form.get("tratamento", "").strip()
+        notas = request.form.get("notas", "").strip()
+
+        try:
+            consulta_id = int(request.form.get("consulta_id", ""))
+        except ValueError:
+            mensagem = "Selecione uma consulta válida."
+        else:
+            if not diagnostico:
+                mensagem = "Informe o diagnóstico."
+            else:
+                try:
+                    prontuario_id = criar_prontuario_medico(
+                        session["usuario_id"],
+                        consulta_id,
+                        diagnostico,
+                        tratamento or None,
+                        notas or None,
+                    )
+                except psycopg.errors.UniqueViolation:
+                    mensagem = "Essa consulta já possui um prontuário."
+                except (psycopg.Error, DatabaseConfigurationError):
+                    logger.exception("Falha ao salvar prontuário.")
+                    mensagem = "Não foi possível salvar o prontuário."
+                else:
+                    if prontuario_id is not None:
+                        return redirect(url_for("prontuario", sucesso="1"))
+                    mensagem = "A consulta selecionada não pertence a você."
+
+    return render_template(
+        "prontuario.html",
+        titulo="Prontuário",
+        consultas=consultas,
+        mensagem=mensagem,
+        prontuarios=prontuarios
+    )
 
 
 @app.route("/administrador")
@@ -197,10 +475,53 @@ def administrador():
     return render_template("administrador.html")
 
 
-@app.route("/usuarios")
+@app.route("/usuarios", methods=["GET", "POST"])
 @perfil_obrigatorio("administrador")
 def usuarios():
-    return render_template("usuarios.html")
+    mensagem = (
+        "Usuário cadastrado com sucesso."
+        if request.args.get("sucesso") == "1"
+        else None
+    )
+
+    try:
+        usuarios_cadastrados = listar_usuarios()
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar usuários.")
+        return "Não foi possível carregar os usuários.", 503
+
+    if request.method == "POST":
+        nome = request.form.get("nome", "").strip()
+        email = request.form.get("email", "").strip()
+        senha = request.form.get("senha", "")
+        tipo = request.form.get("tipo", "")
+
+        if not nome or not email or len(senha) < 8:
+            mensagem = "Preencha nome e e-mail e use uma senha com pelo menos 8 caracteres."
+        elif tipo not in TIPOS_VALIDOS:
+            mensagem = "Selecione um tipo de usuário válido."
+        else:
+            try:
+                register_user(
+                    nome,
+                    email,
+                    generate_password_hash(senha),
+                    tipo,
+                )
+            except psycopg.errors.UniqueViolation:
+                mensagem = "Este e-mail já está cadastrado."
+            except (psycopg.Error, DatabaseConfigurationError):
+                logger.exception("Falha ao cadastrar usuário pelo administrador.")
+                mensagem = "Não foi possível cadastrar o usuário."
+            else:
+                return redirect(url_for("usuarios", sucesso="1"))
+
+    return render_template(
+        "usuarios.html",
+        titulo="Gestão de usuários",
+        usuarios=usuarios_cadastrados,
+        mensagem=mensagem,
+    )
 
 
 @app.route("/relatorios")
@@ -208,6 +529,23 @@ def usuarios():
 def relatorios():
     return render_template("relatorios.html")
 
+@app.route("/relatorios-medico")
+@perfil_obrigatorio("medico")
+def relatorios_medico():
+    try:
+        resumo = obter_resumo_medico(session["usuario_id"])
+        erro_relatorio = None
+    except (psycopg.Error, DatabaseConfigurationError):
+        logger.exception("Falha ao carregar o resumo do médico.")
+        resumo = None
+        erro_relatorio = "Não foi possível carregar o relatório."
+
+    return render_template(
+        "relatorios_medico.html",
+        titulo="Relatórios do médico",
+        resumo=resumo,
+        erro_relatorio=erro_relatorio,
+    )
 
 if __name__ == "__main__":
     app.run(debug=os.getenv("FLASK_DEBUG") == "1")
