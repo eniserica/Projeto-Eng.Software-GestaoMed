@@ -130,11 +130,14 @@ def cadastro():
         nome = request.form.get("nome", "").strip()
         email = request.form.get("email", "").strip()
         senha = request.form.get("senha", "")
+        repeat_senha = request.form.get("repeat_senha", "")
 
         if tipo not in TIPOS_CADASTRO_PUBLICO:
             mensagem = "O perfil administrador só pode ser criado pela ferramenta create_admin.py."
         elif not nome or not email or len(senha) < 8:
             mensagem = "Preencha todos os campos e use uma senha com pelo menos 8 caracteres."
+        elif senha != repeat_senha:
+            mensagem = "As senhas precisam ser iguais."
         else:
             try:
                 register_user(nome, email, generate_password_hash(senha), tipo)

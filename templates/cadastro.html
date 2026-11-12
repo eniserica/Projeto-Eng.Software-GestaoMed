@@ -19,8 +19,12 @@
                 <input type="hidden" name="tipo" value="{{ tipo or '' }}">
                 <input type="text" name="nome" placeholder="Nome completo" required>
                 <input type="email" name="email" placeholder="E-mail" required>
-                <input type="password" name="senha" placeholder="Senha (mínimo 8 caracteres)" minlength="8" required>
 
+                <input type="password" name="senha" placeholder="Senha (mínimo 8 caracteres)" minlength="8" required>
+                <input type="password" name="repeat_senha" placeholder="Repita sua senha" required>
+
+
+                
                 <button class="btn-entrar" type="submit">Cadastrar</button>
             </form>
             {% if mensagem %}

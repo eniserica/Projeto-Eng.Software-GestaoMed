@@ -225,6 +225,7 @@ footer {
     font-weight: bold;
     font-size: 1rem;
     cursor: pointer;
+    margin-bottom: 24px;
 }
 
 .acessar-container h3{
@@ -736,10 +737,3 @@ body.pagina-inicial {
   text-align: center;
 }
 
-.acessar-container .btn-entrar + p {
-  margin-top: 24px;
-}
-
-.voltar-login {
-    margin-top: 24px;
-}
