@@ -49,10 +49,16 @@
             
                 <a href="{{ url_for('login') }}">Escolher outro perfil</a>
 
-                <input type="email" placeholder="E-mail">
-                <input type = "password" placeholder = "Senha">
-                
-                <button class = "btn-entrar">Entrar</button>
+                <form method="post" action="{{ url_for('login') }}">
+                    <input type="hidden" name="tipo" value="{{ tipo }}">
+                    <input type="email" name="email" placeholder="E-mail" autocomplete="email" required>
+                    <input type="password" name="senha" placeholder="Senha" autocomplete="current-password" required>
+                    <button class="btn-entrar" type="submit">Entrar</button>
+                </form>
+
+                {% if mensagem %}
+                    <p role="alert">{{ mensagem }}</p>
+                {% endif %}
 
                 <p>Não possui uma conta? <a href = "{{ url_for('cadastro', tipo=tipo) }}">Cadastre-se</a></p>
 

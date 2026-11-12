@@ -19,12 +19,12 @@
                 <input type="hidden" name="tipo" value="{{ tipo or '' }}">
                 <input type="text" name="nome" placeholder="Nome completo" required>
                 <input type="email" name="email" placeholder="E-mail" required>
-                <input type="password" name="senha" placeholder="Senha" required>
+                <input type="password" name="senha" placeholder="Senha (mínimo 8 caracteres)" minlength="8" required>
 
                 <button class="btn-entrar" type="submit">Cadastrar</button>
             </form>
             {% if mensagem %}
-                <p>{{ mensagem }}</p>
+                <p role="alert">{{ mensagem }}</p>
             {% endif %}
 
 
