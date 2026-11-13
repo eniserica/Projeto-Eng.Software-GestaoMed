@@ -127,6 +127,8 @@ O desenvolvimento do GestãoMed é organizado em etapas, priorizando inicialment
 
 **Repositório do projeto:** (https://github.com/eniserica/Projeto-Eng.Software-GestaoMed.git)
 
+**Teste do sistema:** (https://app.notion.com/p/Testes-do-Site-417ad4c6bd638046b89ed639f078b88a?source=copy_link)
+
 ## Considerações finais
 
 O GestãoMed tem como finalidade contribuir para a organização e otimização dos serviços de agendamento médico, oferecendo uma solução tecnológica acessível e prática.
