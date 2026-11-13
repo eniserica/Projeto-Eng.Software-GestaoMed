@@ -116,16 +116,7 @@ http://127.0.0.1:5000
 
 ## Imagens do sistema
 
-As imagens abaixo apresentam as interfaces desenvolvidas para o GestãoMed.
-
-### Tela de acesso (Login)
-./images-readme/Captura de tela 2026-11-13 150409
-### Página inicial
-
-
-
-### Área do paciente
-
+- Para conferir um pouco do nosso site pode verificar as imagens na pasta chamada **images-readme** 
 
 
 ## Gerenciamento e planejamento do projeto
